@@ -28,7 +28,9 @@
 # imported targets (no SCOTCH_INCLUDE_DIRS / SCOTCH_LIBRARIES). On a case-insensitive
 # file system (macOS) the CONFIG-mode lookup for "Scotch" matches it, so force
 # MODULE mode (FindScotch.cmake) first; the macro below then skips its own lookup.
-FIND_PACKAGE(Scotch MODULE QUIET)
+IF(APPLE)
+  FIND_PACKAGE(Scotch MODULE QUIET)
+ENDIF()
 
 SALOME_FIND_PACKAGE_AND_DETECT_CONFLICTS(Scotch SCOTCH_INCLUDE_DIRS 1)
 #MARK_AS_ADVANCED()

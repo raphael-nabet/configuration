@@ -133,7 +133,7 @@ class PathConverter:
         """
         if self.is_system_path(path):
             return self.strategies['system']
-        elif path.startswith('$ORIGIN') or path.startswith('@'):
+        elif path.startswith('$ORIGIN') or (IS_MACOS and path.startswith('@')):
             return self.strategies['origin']
         elif os.path.isabs(path):
             return self.strategies['absolute']

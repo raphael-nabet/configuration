@@ -32,6 +32,15 @@ MACRO(OMNIORB_COMPILE_IDL_FORPYTHON_ON_INSTALL MYOMNIORBIDLPYTHON MYIDLPYFLAGS M
   STRING(REPLACE \" \" \";\" MYIDLPYFLAGS2 \${MYIDLPYFLAGS})
   MESSAGE(STATUS \"Compiling \${MYIDLFILE} into \${MYFULLDIR}\")
   EXECUTE_PROCESS(COMMAND \${MYOMNIORBIDLPYTHON} \${MYIDLPYFLAGS2} -C\${MYFULLDIR} \${MYIDLFILE})
+  # The stub package given by -Wbpackage (salome.kernel) is shared by all the
+  # SALOME modules, each one installed in its own prefix. omniidl creates the
+  # __init__.py of each level of this package (\"# omniORB stub directory\")
+  # in the first module that installs stubs (KERNEL, GUI...): it is then a
+  # regular package that hides the same package of the other modules
+  # (e.g. salome.kernel.GEOM_Gen_idl not found when GUI comes first in
+  # PYTHONPATH, salome.kernel.SALOME_Exception_idl not found from GEOM).
+  # pkgutil.extend_path merges the directories of all the modules.
+  # macOS only (APPLE evaluated when this file is included, not at install time).
   IF(_OMNIORB_STUB_EXTEND_PATH)
     FOREACH(_flag \${MYIDLPYFLAGS2})
       IF(_flag MATCHES \"^-Wbpackage=(.+)$\")
